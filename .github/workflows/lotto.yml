@@ -1,35 +1,33 @@
-name: LottoBot Auto Message
+name: Lotto Bot
 
 on:
   schedule:
-    - cron: '0 2 * * 4'   # 목요일 오전 11시 (UTC 기준 +9시간)
-    - cron: '0 13 * * 6'  # 토요일 오후 10시 (UTC 기준 +9시간)
-  workflow_dispatch:      # 수동 실행도 가능
+    # 매주 목요일 오전 11시(UTC+9 기준)
+    - cron: '0 2 * * 4'
+    # 매주 토요일 오후 10시(UTC+9 기준)
+    - cron: '0 13 * * 6'
+  workflow_dispatch:
 
 jobs:
-  run-lotto:
+  run-lotto-bot:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: 저장소 불러오기
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Python 설치
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        pip install requests
+    - name: 필요한 모듈 설치
+      run: pip install -r requirements.txt
 
-    - name: Run Lotto Script
+    - name: 로또 추천/결과 전송
       run: |
-        if [ "$(date +%u)" -eq 4 ]; then
-          echo "목요일 실행: 추천번호 전송"
-          python lotto_recommend.py
-        elif [ "$(date +%u)" -eq 6 ]; then
-          echo "토요일 실행: 결과 분석 및 전송"
+        if [ "$(date +%u)" -eq 4 ]; then  # 목요일
+          python lotto_thursday.py
+        elif [ "$(date +%u)" -eq 6 ]; then  # 토요일
           python lotto_result.py
         fi
-

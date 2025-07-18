@@ -1,25 +1,24 @@
-name: Lotto Bot
+name: Lotto Recommendation Sender
 
 on:
   schedule:
-    - cron: '0 9 * * 4'  # 매주 목요일 오전 9시 (UTC 기준 = 한국시간 18시)
-  workflow_dispatch:  # 수동 실행도 가능
+    - cron: '0 2 * * 4'  # 매주 목요일 오전 11시 (KST=UTC+9 → UTC 02:00)
+  workflow_dispatch:
 
 jobs:
-  run-lotto-bot:
+  send_lotto_message:
     runs-on: ubuntu-latest
     steps:
-      - name: 저장소 불러오기
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Python 설치
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: 필요 모듈 설치
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install requests
 
-      - name: 로또 추천번호 전송
-        run: python lotto_sender.py
-
+      - name: Run Lotto Sender
+        run: python lotto_thursday.py
